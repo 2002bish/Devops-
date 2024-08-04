@@ -1,4 +1,4 @@
- Use the official Python image as a base
+Use the official Python image as a base
 FROM python:3.9-slim-buster
 
 # Set environment variables
