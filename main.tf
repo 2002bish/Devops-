@@ -1,64 +1,66 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.0"
-    }
-    awscc = {
-      source  = "hashicorp/awscc"
-      version = "~> 0.1.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.1.0"
-    }
-  }
-}
-provider "awscc" {
-  region = var.aws_region
-}
+resource "aws_iam_policy" "policy" {
+  name        = "${random_pet.pet_name.id}-policy"
+  description = "My test policy"
 
-provider "random" {}
-resource "random_pet" "keyspace" {
-  length    = 4
-  separator = "_"
-}
-
-resource "awscc_cassandra_keyspace" "terraform" {
-  keyspace_name = random_pet.keyspace.id
-}
-
-resource "awscc_cassandra_table" "users" {
-  keyspace_name = awscc_cassandra_keyspace.terraform.keyspace_name
-  table_name    = "users"
-
-  partition_key_columns = [
+  policy = <<EOT
+{
+  "Version": "2012-10-17",
+  "Statement": [
     {
-      column_name : "id"
-      column_type : "int"
-    }
-  ]
-  regular_columns = [
-    {
-      column_name : "first_name"
-      column_type : "text"
+      "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
     },
     {
-      column_name : "last_name"
-      column_type : "text"
-    },
-    {
-      column_name : "email"
-      column_type : "text"
+      "Action": [
+        "s3:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_s3_bucket.bucket.arn}"
     }
   ]
 
-  encryption_specification = {
-    encryption_type : "AWS_OWNED_KMS_KEY"
-    kms_key_identifier : aws_kms_key.terraform.key_id
+}
+EOT
+}
+data "aws_iam_policy_document" "example" {
+  statement {
+    actions   = ["s3:ListAllMyBuckets"]
+    resources = ["arn:aws:s3:::*"]
+    effect = "Allow"
+  }
+  statement {
+    actions   = ["s3:*"]
+    resources = [aws_s3_bucket.bucket.arn]
+    effect = "Allow"
   }
 }
-output "keyspace_name" {
-  description = "Name of Cassandra keyspace."
-  value       = awscc_cassandra_keyspace.terraform.keyspace_name
-}
+ resource "aws_iam_policy" "policy" {
+   name        = "${random_pet.pet_name.id}-policy"
+   description = "My test policy"
+  policy = data.aws_iam_policy_document.example.json
+  policy = <<EOT
+ {
+   "Version": "2012-10-17",
+   "Statement": [
+     {
+       "Action": [
+         "s3:ListAllMyBuckets"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+     },
+     {
+       "Action": [
+         "s3:*"
+       ],
+       "Effect": "Allow",
+       "Resource": "${aws_s3_bucket.bucket.arn}"
+     }
+   ]
+ }
+ EOT
+ }
+
