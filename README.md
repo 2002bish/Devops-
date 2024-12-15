@@ -1,2 +1,2 @@
 # Devops-
-This is only made for the refrences and made easy for further.
+This is only made for the refrences and made easy for further use.
