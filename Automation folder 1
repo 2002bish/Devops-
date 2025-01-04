@@ -1,1 +1,5 @@
 # we can  use it by using a programming language like python for the Automation.
+#it require boto3 which can be get using 
+pip install boto3
+#So the automation looks like this
+
