@@ -1,4 +1,5 @@
-FROM python:3.9-slim-buster    (Here from Python represent that it will download the base image of the python in the container)
+FROM python:3.9-slim-buster  
+#(Here from Python represent that it will download the base image of the python in the container)
 
 # Set environment variables
 ENV PYTHONUNBUFFERED 1
