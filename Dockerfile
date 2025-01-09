@@ -19,4 +19,6 @@ COPY . /app
 EXPOSE 5000
 
 # Run the Flask app when the container launches
-CMD ["flask", "run"]
+
+
+ENTRYPOINT ["flask", "run"]
